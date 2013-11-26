@@ -27,6 +27,9 @@
 
 (defvar *context-is-top-level* t)
 
+(eval-when (:compile-toplevel :load-toplevel :execute)
+  (in-readtable :fare-quasiquote))
+
 (defun convert-js-parse-tree-to-javascript (parse)
   (labels
       ((TBD (&rest args)
@@ -179,12 +182,12 @@
                                       i
                                       `(,i ,@args)))))
            ;; Introduce chain if working on a complex object.
-           (`(@ ,(guard call (listp call)) ,@b)
+     #+nil (`(@ ,(guard call (listp call)) ,@b)
              (tidy
               `(chain ,call ,@b)))
            ;; otherwise untouched.
            (_ x))))
-    (setf *last-conversion* (r parse)))))
+    (setf *last-conversion* (r parse))))
 
 (defun help-let-forms (form)
   (match form
